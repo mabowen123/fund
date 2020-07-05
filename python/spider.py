@@ -16,10 +16,10 @@ class Spider:
 
     def sleep(self):
         hour = self.tm_hour()
-        if hour > 9 and hour < 15:
-            time.sleep(60)
-        else:
-            time.sleep(300)
+        if hour < 9:
+            exit('时间未到')
+        elif hour > 20:
+            time.sleep(240)
 
     @staticmethod
     def tm_hour():
@@ -67,10 +67,10 @@ class Spider:
         return UserAgent().random
 
     def run(self):
+        self.sleep()
         for t in self.threads(UserFund().fundIds()):
             t.start()
             t.join()
-        self.sleep()
 
 
 if __name__ == "__main__":

@@ -12,7 +12,7 @@ class r:
             self.host = '127.0.0.1'
             self.db = '0'
             self.port = '6379'
-            self.expire = 60 * 30
+            self.expire = 60 * 60 * 24
             self.pool = redis.ConnectionPool(host=self.host, port=self.port, password=self.password, db=self.db)
             self.r = redis.StrictRedis(connection_pool=self.pool)
 
