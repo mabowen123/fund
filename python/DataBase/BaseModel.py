@@ -3,7 +3,7 @@ import pymysql
 
 class BaseModel:
     def __init__(self):
-        self.__host = '127.0.0.1'
+        self.__host = 'mysql'
         self.__user = 'root'
         self.__password = 'mysql!@*Root'
         self.__port = 3306

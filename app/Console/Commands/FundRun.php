@@ -4,9 +4,11 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use App\Traits\FundRun as pFundRun;
 
 class FundRun extends Command
 {
+    use pFundRun;
     /**
      * The name and signature of the console command.
      *
@@ -28,8 +30,6 @@ class FundRun extends Command
      */
     public function handle()
     {
-        Log::info($this->getDescription());
-        $path = base_path('python/spider.py');
-        system("python {$path}");
+        $this->fundRun();
     }
 }

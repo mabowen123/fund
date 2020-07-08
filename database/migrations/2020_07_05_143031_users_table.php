@@ -16,8 +16,8 @@ class UsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->integerIncrements('id');
-            $table->string('username', '16');
-            $table->string('password', '32');
+            $table->string('username', '16')->unique('username');
+            $table->string('password', '255');
             $table->string('nickname', '16')->charset('utf8mb4');
             $table->timestampsTz();
         });

@@ -9,7 +9,7 @@ class r:
         if self._first == False:
             self._first = True
             self.password = '%xIqZE)C0Ris[Xj{'
-            self.host = '127.0.0.1'
+            self.host = 'redis'
             self.db = '0'
             self.port = '6379'
             self.expire = 60 * 60 * 24
@@ -21,7 +21,8 @@ class r:
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def hmset(self, key, value):
+    def hmset(self, key, value, prefix):
+        key = "{}:{}".format(prefix, key)
         self.r.hmset(key, value)
         self.r.expire(key, self.expire)
 
