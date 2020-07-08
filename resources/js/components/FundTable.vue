@@ -45,6 +45,7 @@
       />
       <el-table-column
         prop="estimated_net_worth_ratio"
+        sortable
         label="预估涨幅(%)"
       />
       <el-table-column
@@ -53,6 +54,7 @@
       />
       <el-table-column
         prop="share"
+        sortable
         label="持有份额"
       >
         <template slot-scope="scope">
@@ -68,6 +70,7 @@
       </el-table-column>
       <el-table-column
         prop="amount"
+        sortable
         label="持有成本"
       >
         <template slot-scope="scope">
@@ -83,6 +86,7 @@
       </el-table-column>
       <el-table-column
         prop="estimated_earnings"
+        sortable
         label="预估收益"
       />
       <el-table-column
@@ -92,6 +96,7 @@
       <el-table-column
         prop="cumulative_income"
         label="累计收益"
+        sortable
       />
       <el-table-column
         prop="update_at"
