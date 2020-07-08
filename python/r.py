@@ -26,5 +26,9 @@ class r:
         self.r.hmset(key, value)
         self.r.expire(key, self.expire)
 
+    def hmget(self, prefix, key, *value):
+        key = "{}:{}".format(prefix, key)
+        return self.r.hmget(key, value)
+
     def __del__(self):
         self.r.close()

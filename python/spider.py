@@ -19,7 +19,7 @@ class Spider:
         if hour < 9:
             exit('time is up')
         elif hour >= 22:
-            time.sleep(100)
+            time.sleep(10)
 
     @staticmethod
     def tm_hour():
@@ -62,6 +62,12 @@ class Spider:
             'actual_net_worth_ratio': actualNetWorthRatio,
             'update_at': res['gztime']
         }
+        rData = r().hmget('fund', res['fundcode'], 'actual_net_worth', 'actual_net_worth_ratio', 'update_at')
+        rDate = time.strftime('%Y-%m-%d', time.strptime(rData[2].decode()[:10], '%Y-%m-%d'))
+        if rDate == time.strftime('%Y-%m-%d', time.localtime()) and len(actualNetWorth) == 0:
+            data['actual_net_worth'] = rData[0].decode()
+            data['actual_net_worth_ratio'] = rData[1].decode()
+
         r().hmset(res['fundcode'], data, 'fund')
 
     @staticmethod
