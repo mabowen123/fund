@@ -18,7 +18,7 @@ class Spider:
         hour = self.tm_hour()
         if hour < 9:
             exit('time is up')
-        elif hour >= 20:
+        elif hour >= 22:
             time.sleep(100)
 
     @staticmethod
