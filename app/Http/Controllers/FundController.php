@@ -39,8 +39,8 @@ class FundController
             'amount' => round(array_sum(array_column($data['list'], 'amount')), 2),
         ];
 
-        $data['amount']['estimated_earnings_rate'] = round(($data['amount']['estimated_earnings'] / $data['amount']['amount']) * 100, 2);
-        $data['amount']['actual_earnings_rate'] = $data['amount']['actual_earnings'] > 0 ? round($data['amount']['actual_earnings'] / $data['amount']['amount'], 2) : 0;
+        $data['amount']['estimated_earnings_rate'] = $data['amount']['amount'] > 0 ? round(($data['amount']['estimated_earnings'] / $data['amount']['amount']) * 100, 2) : 0;
+        $data['amount']['actual_earnings_rate'] = $data['amount']['amount'] > 0 && $data['amount']['actual_earnings'] > 0 ? round($data['amount']['actual_earnings'] / $data['amount']['amount'], 2) : 0;
         return success($data);
     }
 
