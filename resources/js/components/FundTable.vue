@@ -18,7 +18,7 @@
         <el-input-number
             v-model="createData.amount"
             size="mini"
-            placeholder="持有成本"
+            placeholder="总投入"
             :controls="false"
             :min="0"
             :precision="2"
