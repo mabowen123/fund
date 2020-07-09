@@ -13,7 +13,8 @@ class r:
             self.db = '0'
             self.port = '6379'
             self.expire = 60 * 60 * 24
-            self.pool = redis.ConnectionPool(host=self.host, port=self.port, password=self.password, db=self.db)
+            self.pool = redis.ConnectionPool(host=self.host, port=self.port, password=self.password, db=self.db,
+                                             decode_responses=True)
             self.r = redis.StrictRedis(connection_pool=self.pool)
 
     def __new__(cls, *args, **kwargs):
@@ -26,9 +27,9 @@ class r:
         self.r.hmset(key, value)
         self.r.expire(key, self.expire)
 
-    def hmget(self, prefix, key, *value):
+    def hmget(self, prefix, key):
         key = "{}:{}".format(prefix, key)
-        return self.r.hmget(key, value)
+        return self.r.hgetall(key)
 
     def __del__(self):
         self.r.close()

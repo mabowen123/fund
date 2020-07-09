@@ -16,10 +16,8 @@ class Spider:
 
     def sleep(self):
         hour = self.tm_hour()
-        if hour < 9:
-            exit('time is up')
-        elif hour >= 22:
-            time.sleep(10)
+        if hour >= 20:
+            time.sleep(30)
 
     @staticmethod
     def tm_hour():
@@ -36,11 +34,29 @@ class Spider:
         headers = {
             'User-Agent': self.headers()
         }
-        api = requests.get(self.url.format(fundId), headers=headers)
-        res = json.loads(re.match(".*?({.*}).*", api.text, re.S).group(1))
         actualNetWorth = ''
         actualNetWorthRatio = ''
-        if self.tm_hour() >= 20:
+
+        res = r().hmget('fund', fundId)
+        if self.tm_hour() <= 15 or not res:
+            api = requests.get(self.url.format(fundId), headers=headers)
+            res = json.loads(re.match(".*?({.*}).*", api.text, re.S).group(1))
+        else:
+            res = {
+                'fundcode': res['fund_id'],
+                'name': res['fund_name'],
+                'dwjz': res['net_worth'],
+                'gsz': res['estimated_net_worth'],
+                'gszzl': res['estimated_net_worth_ratio'],
+                'gztime': res['update_at'],
+                'actual_net_worth': res['actual_net_worth'],
+                'actual_net_worth_ratio': res['actual_net_worth_ratio']
+            }
+            if res['update_at'][:10] == time.strftime('%Y-%m-%d', time.localtime()):
+                actualNetWorth = res['actual_net_worth']
+                actualNetWorthRatio = res['actual_net_worth_ratio']
+
+        if self.tm_hour() >= 20 and (not actualNetWorth or not actualNetWorthRatio):
             html = requests.get(self.htmlUrl.format(fundId), headers=headers)
             soup = BeautifulSoup(html.text, 'lxml')
             dataItem = soup.find('dl', class_='dataItem02')
@@ -62,12 +78,6 @@ class Spider:
             'actual_net_worth_ratio': actualNetWorthRatio,
             'update_at': res['gztime']
         }
-        rData = r().hmget('fund', res['fundcode'], 'actual_net_worth', 'actual_net_worth_ratio', 'update_at')
-        rDate = time.strftime('%Y-%m-%d', time.strptime(rData[2].decode()[:10], '%Y-%m-%d'))
-        if rDate == time.strftime('%Y-%m-%d', time.localtime()) and len(actualNetWorth) == 0:
-            data['actual_net_worth'] = rData[0].decode()
-            data['actual_net_worth_ratio'] = rData[1].decode()
-
         r().hmset(res['fundcode'], data, 'fund')
 
     @staticmethod
