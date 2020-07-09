@@ -41,6 +41,17 @@ class FundController
 
         $data['amount']['estimated_earnings_rate'] = $data['amount']['amount'] > 0 ? round(($data['amount']['estimated_earnings'] / $data['amount']['amount']) * 100, 2) : 0;
         $data['amount']['actual_earnings_rate'] = $data['amount']['amount'] > 0 && $data['amount']['actual_earnings'] > 0 ? round(($data['amount']['actual_earnings'] / $data['amount']['amount']) * 100, 2) : 0;
+
+        $keys = Redis::keys('market*');
+        $market = [];
+        array_map(function ($key) use (&$market) {
+            $item = Redis::hGetAll($key);
+            $item['time'] = date('Y-m-d H:i:s', strtotime($item['time']));
+            $item['percent'] = round($item['percent'] * 100, 2);
+            $market[] = $item;
+        }, $keys);
+        $data['market'] = $market;
+
         return success($data);
     }
 

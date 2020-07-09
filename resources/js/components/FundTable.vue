@@ -30,6 +30,15 @@
             @click="add"
         >新增
         </el-button>
+        <div style="display: inline-flex;margin-left:150px">
+            <div v-for="item in data.market" :class="item.percent>0 ?'text-danger' :'text-success'">
+                <span>{{item.name}}&nbsp&nbsp</span>
+                <span>{{item.price}}&nbsp&nbsp</span>
+                <span>{{item.percent}}%&nbsp&nbsp</span>
+                <span>{{item.time}}</span>
+                &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+            </div>
+        </div>
         <el-table
             :data="data.list"
             :row-class-name="tableRowClassName"
@@ -126,7 +135,8 @@
                 timeVal: undefined,
                 data: {
                     list: [],
-                    amount: []
+                    amount: [],
+                    market: []
                 },
                 createData: {
                     fund_id: undefined,
@@ -149,7 +159,7 @@
                     if (window['timeVal'] !== undefined) {
                         window.clearInterval(window['timeVal'])
                     }
-
+                    this.getMarket()
                     this.fundList()
                     this.timeVals()
                 }
@@ -174,6 +184,7 @@
                 axios.get('/fund').then(res => {
                     this.data.list = res.data.data.list
                     this.data.amount = res.data.data.amount
+                    this.data.market = res.data.data.market
                     this.time = this.standard_time
                 })
             },

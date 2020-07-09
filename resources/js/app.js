@@ -26,9 +26,18 @@ Vue.component('fund-component', require('./components/FundTable.vue').default);
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css';
-Vue.use(ElementUI)
+
+import {Button, Input,Table,InputNumber,TableColumn, Message, MessageBox, Select} from 'element-ui';
+
+Vue.use(Button)
+Vue.use(Input)
+Vue.use(Table)
+Vue.use(TableColumn)
+Vue.use(Select)
+Vue.use(InputNumber)
+Vue.prototype.$msgbox = MessageBox;
+Vue.prototype.$message = Message;
+
 const app = new Vue({
     el: '#app',
 });

@@ -11,16 +11,17 @@ import random
 
 class Spider:
     def __init__(self):
-        self.url = "http://fundgz.1234567.com.cn/js/{}.js"
+        self.url = "http://fundgz.1234567.com.cn/js/{}.js?rt={}"
         self.htmlUrl = 'http://fund.eastmoney.com/{}.html'
+        self.marketUrl = "http://api.money.126.net/data/feed/1399001,1399006,0000001?callback=_ntes_quote_callback{}"
 
     def sleep(self):
-        hour = self.tm_hour()
+        hour = self.tm_hour
         if hour >= 20:
             time.sleep(30)
 
-    @staticmethod
-    def tm_hour():
+    @property
+    def tm_hour(self):
         return time.localtime().tm_hour
 
     def threads(self, t_group):
@@ -30,16 +31,20 @@ class Spider:
 
         return thread
 
+    @property
+    def timestamps(self):
+        return int(round(time.time() * 1000))
+
     def get(self, fundId):
         headers = {
-            'User-Agent': self.headers()
+            'User-Agent': self.headers
         }
         actualNetWorth = ''
         actualNetWorthRatio = ''
 
         res = r().hmget('fund', fundId)
-        if self.tm_hour() <= 15 or not res:
-            api = requests.get(self.url.format(fundId), headers=headers)
+        if self.tm_hour <= 15 or not res:
+            api = requests.get(self.url.format(fundId, self.timestamps), headers=headers)
             res = json.loads(re.match(".*?({.*}).*", api.text, re.S).group(1))
         else:
             res = {
@@ -52,11 +57,11 @@ class Spider:
                 'actual_net_worth': res['actual_net_worth'],
                 'actual_net_worth_ratio': res['actual_net_worth_ratio']
             }
-            if res['update_at'][:10] == time.strftime('%Y-%m-%d', time.localtime()):
+            if res['gztime'][:10] == time.strftime('%Y-%m-%d', time.localtime()):
                 actualNetWorth = res['actual_net_worth']
                 actualNetWorthRatio = res['actual_net_worth_ratio']
 
-        if self.tm_hour() >= 20 and (not actualNetWorth or not actualNetWorthRatio):
+        if self.tm_hour >= 20 and (not actualNetWorth or not actualNetWorthRatio):
             html = requests.get(self.htmlUrl.format(fundId), headers=headers)
             soup = BeautifulSoup(html.text, 'lxml')
             dataItem = soup.find('dl', class_='dataItem02')
@@ -80,8 +85,8 @@ class Spider:
         }
         r().hmset(res['fundcode'], data, 'fund')
 
-    @staticmethod
-    def headers():
+    @property
+    def headers(self):
         headers = [
             "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36",
             "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11",
@@ -111,8 +116,21 @@ class Spider:
         ]
         return random.choice(headers)
 
+    def market(self):
+        res = requests.get(self.marketUrl.format(self.timestamps))
+        res = json.loads(re.match(".*?({.*}).*", res.text, re.S).group(1))
+        for item in res.values():
+            data = {
+                'name': item['name'],
+                'time': item['time'],
+                'percent': item['percent'],
+                'price': item['price']
+            }
+            r().hmset(item['code'], data, 'market')
+
     def run(self):
         self.sleep()
+        self.market()
         for t in self.threads(UserFund().fundIds()):
             t.start()
             t.join()
