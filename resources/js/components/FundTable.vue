@@ -159,7 +159,6 @@
                     if (window['timeVal'] !== undefined) {
                         window.clearInterval(window['timeVal'])
                     }
-                    this.getMarket()
                     this.fundList()
                     this.timeVals()
                 }
