@@ -71,7 +71,6 @@ class Spider:
                 if date == time.strftime('%Y-%m-%d', time.localtime()):
                     actualNetWorth = dataNums[0].text
                     actualNetWorthRatio = dataNums[1].text
-                    res['gztime'] = time.strftime('%Y-%m-%d %H:%I:%S', time.localtime())
 
         data = {
             'fund_id': res['fundcode'],
@@ -81,7 +80,7 @@ class Spider:
             'estimated_net_worth_ratio': res['gszzl'],
             'actual_net_worth': actualNetWorth,
             'actual_net_worth_ratio': actualNetWorthRatio,
-            'update_at': res['gztime']
+            'update_at': time.strftime('%Y-%m-%d %H:%I:%S', time.localtime())
         }
         r().hmset(res['fundcode'], data, 'fund')
 
