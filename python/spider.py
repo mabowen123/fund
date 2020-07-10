@@ -80,7 +80,7 @@ class Spider:
             'estimated_net_worth_ratio': res['gszzl'],
             'actual_net_worth': actualNetWorth,
             'actual_net_worth_ratio': actualNetWorthRatio,
-            'update_at': time.strftime('%Y-%m-%d %H:%I:%S', time.localtime())
+            'update_at': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         }
         r().hmset(res['fundcode'], data, 'fund')
 
