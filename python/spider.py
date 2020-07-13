@@ -130,8 +130,11 @@ class Spider:
     def run(self):
         self.sleep()
         self.market()
-        for t in self.threads(UserFund().fundIds()):
+        threadList = self.threads(UserFund().fundIds())
+        for t in threadList:
+            t.setDaemon(True)
             t.start()
+        for t in threadList:
             t.join()
 
 
