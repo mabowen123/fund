@@ -128,7 +128,6 @@ class Spider:
             r().hmset(item['code'], data, 'market')
 
     def run(self):
-        self.sleep()
         self.market()
         threadList = self.threads(UserFund().fundIds())
         for t in threadList:
