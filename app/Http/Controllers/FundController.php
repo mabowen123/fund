@@ -40,7 +40,7 @@ class FundController
         ];
 
         $data['amount']['estimated_earnings_rate'] = $data['amount']['amount'] > 0 ? round(($data['amount']['estimated_earnings'] / $data['amount']['amount']) * 100, 2) : 0;
-        $data['amount']['actual_earnings_rate'] = $data['amount']['amount'] > 0 && $data['amount']['actual_earnings'] > 0 ? round(($data['amount']['actual_earnings'] / $data['amount']['amount']) * 100, 2) : 0;
+        $data['amount']['actual_earnings_rate'] = $data['amount']['amount'] > 0 && $data['amount']['actual_earnings'] <> 0 ? round(($data['amount']['actual_earnings'] / $data['amount']['amount']) * 100, 2) : 0;
 
         $keys = Redis::keys('market*');
         $market = [];
